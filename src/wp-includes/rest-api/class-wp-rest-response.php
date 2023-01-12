@@ -41,6 +41,15 @@ class WP_REST_Response extends WP_HTTP_Response {
 	protected $matched_handler = null;
 
 	/**
+	 * All handlers that match the request, even if the method doesn't match.
+	 * For example, this could include both GET and POST handlers for a route.
+	 * Used when calculating the Allow header.
+	 *
+	 * @var null|array
+	 */
+	protected $all_methods_matched_handlers = null;
+
+	/**
 	 * Adds a link to the response.
 	 *
 	 * @internal The $rel parameter is first, as this looks nicer when sending multiple.
@@ -202,6 +211,24 @@ class WP_REST_Response extends WP_HTTP_Response {
 	 */
 	public function set_matched_handler( $handler ) {
 		$this->matched_handler = $handler;
+	}
+
+	/**
+	 * Retrieves all possible handlers that match the route, even for other HTTP methods.
+	 *
+	 * @return null|array Handlers that could be used to
+	 */
+	public function get_all_methods_matched_handlers() {
+		return $this->all_methods_matched_handlers;
+	}
+
+	/**
+	 * Sets all possible handlers that match the route.
+	 *
+	 * @param array $handlers An array of handlers matching the route across all HTTP methods.
+	 */
+	public function set_all_methods_matched_handlers( $handlers ) {
+		$this->all_methods_matched_handlers = $handlers;
 	}
 
 	/**

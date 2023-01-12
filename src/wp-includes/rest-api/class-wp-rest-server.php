@@ -994,7 +994,7 @@ class WP_REST_Server {
 			return $this->error_to_response( $matched );
 		}
 
-		list( $route, $handler ) = $matched;
+		list( $route, $handler, $handlers_all_methods ) = $matched;
 
 		if ( ! is_callable( $handler['callback'] ) ) {
 			$error = new WP_Error(
@@ -1016,7 +1016,7 @@ class WP_REST_Server {
 			}
 		}
 
-		return $this->respond_to_request( $request, $route, $handler, $error );
+		return $this->respond_to_request( $request, $route, $handler, $error, $handlers_all_methods );
 	}
 
 	/**
@@ -1075,7 +1075,7 @@ class WP_REST_Server {
 				}
 
 				if ( ! is_callable( $callback ) ) {
-					return array( $route, $handler );
+					return array( $route, $handler, $handlers );
 				}
 
 				$request->set_url_params( $args );
@@ -1091,7 +1091,7 @@ class WP_REST_Server {
 
 				$request->set_default_params( $defaults );
 
-				return array( $route, $handler );
+				return array( $route, $handler, $handlers );
 			}
 		}
 
@@ -1108,13 +1108,14 @@ class WP_REST_Server {
 	 * @access private
 	 * @since 5.6.0
 	 *
-	 * @param WP_REST_Request $request  The request object.
-	 * @param string          $route    The matched route regex.
-	 * @param array           $handler  The matched route handler.
-	 * @param WP_Error|null   $response The current error object if any.
+	 * @param WP_REST_Request $request               The request object.
+	 * @param string          $route                 The matched route regex.
+	 * @param array           $handler               The matched route handler.
+	 * @param WP_Error|null   $response              The current error object if any.
+	 * @param array           $all_methods_handlers  The matched route handlers including other methods.
 	 * @return WP_REST_Response
 	 */
-	protected function respond_to_request( $request, $route, $handler, $response ) {
+	protected function respond_to_request( $request, $route, $handler, $response, $all_methods_handlers ) {
 		/**
 		 * Filters the response before executing any REST API callbacks.
 		 *
@@ -1204,6 +1205,7 @@ class WP_REST_Server {
 
 		$response->set_matched_route( $route );
 		$response->set_matched_handler( $handler );
+		$response->set_all_methods_matched_handlers( $all_methods_handlers );
 
 		return $response;
 	}

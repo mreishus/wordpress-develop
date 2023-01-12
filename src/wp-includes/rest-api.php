@@ -808,12 +808,16 @@ function rest_send_allow_header( $response, $server, $request ) {
 		return $response;
 	}
 
-	$routes = $server->get_routes();
+	$all_handlers = $response->get_all_methods_matched_handlers();
+	if ( empty( $all_handlers ) ) {
+		$routes = $server->get_routes();
+		$all_handlers = $routes[ $matched_route ];
+	}
 
 	$allowed_methods = array();
 
 	// Get the allowed methods across the routes.
-	foreach ( $routes[ $matched_route ] as $_handler ) {
+	foreach ( $all_handlers as $_handler ) {
 		foreach ( $_handler['methods'] as $handler_method => $value ) {
 
 			if ( ! empty( $_handler['permission_callback'] ) ) {
