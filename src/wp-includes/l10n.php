@@ -1189,9 +1189,15 @@ function load_script_textdomain( $handle, $domain = 'default', $path = '' ) {
 	$languages_path = WP_LANG_DIR;
 
 	$src_url     = wp_parse_url( $src );
-	$content_url = wp_parse_url( content_url() );
-	$plugins_url = wp_parse_url( plugins_url() );
-	$site_url    = wp_parse_url( site_url() );
+	static $content_url = null;
+	static $plugins_url = null;
+	static $site_url    = null;
+
+	if ( null === $content_url ) {
+		$content_url = wp_parse_url( content_url() );
+		$plugins_url = wp_parse_url( plugins_url() );
+		$site_url    = wp_parse_url( site_url() );
+	}
 
 	// If the host is the same or it's a relative URL.
 	if (
