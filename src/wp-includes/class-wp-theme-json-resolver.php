@@ -1043,17 +1043,16 @@ class WP_Theme_JSON_Cache_Manager {
 	);
 	private static $last_style_update_count = 0;
 	private static $last_block_count = 0;
-	private static $last_theme_features_signature = '';
-
-	// Temporary storage for new signatures to prevent redundant calculations
-	private static $new_theme_features_signature = '';
 
 	public static function clear_cache() {
 		self::$cache = array_fill_keys( array_keys( self::$cache ), null );
 		self::$last_style_update_count = 0;
 		self::$last_block_count = 0;
-		self::$last_theme_features_signature = '';
-		self::$new_theme_features_signature = '';
+	}
+
+	public static function handle_theme_support_change( $feature, $args = null ) {
+		self::$cache['theme'] = null;
+		self::$cache['custom'] = null;
 	}
 
 	public static function get_cached_data( $origin, $data_generator ) {
@@ -1082,19 +1081,6 @@ class WP_Theme_JSON_Cache_Manager {
 			return true;
 		}
 
-		// Check for changes in theme features
-		global $_wp_theme_features;
-		$current_theme_features_signature = md5( serialize( $_wp_theme_features ) );
-		if ( self::$last_theme_features_signature !== $current_theme_features_signature ) {
-			self::$cache['theme'] = null;
-			self::$cache['custom'] = null;
-			// Store the new theme features signature in temporary storage
-			self::$new_theme_features_signature = $current_theme_features_signature;
-			if ( $origin === 'theme' || $origin === 'custom' ) {
-				return true;
-			}
-		}
-
 		return false;
 	}
 
@@ -1104,18 +1090,6 @@ class WP_Theme_JSON_Cache_Manager {
 		self::$last_style_update_count = $style_registry->get_style_update_count();
 		$block_registry = WP_Block_Type_Registry::get_instance();
 		self::$last_block_count = count( $block_registry->get_all_registered() );
-
-		// Update theme features signature
-		if ( ! empty( self::$new_theme_features_signature ) ) {
-			// Use previously calculated signature.
-			self::$last_theme_features_signature = self::$new_theme_features_signature;
-			self::$new_theme_features_signature = '';
-		} else {
-			// Calculate signature if not already done.
-			global $_wp_theme_features;
-			self::$last_theme_features_signature = md5( serialize( $_wp_theme_features ) );
-			self::$new_theme_features_signature = '';
-		}
 	}
 }
 
