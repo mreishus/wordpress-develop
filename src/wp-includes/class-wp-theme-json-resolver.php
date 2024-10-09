@@ -649,7 +649,7 @@ class WP_Theme_JSON_Resolver {
 	 *                       'custom' is used as default value as well as fallback value if the origin is unknown.
 	 * @return WP_Theme_JSON
 	 */
-	public static function get_merged_data_inner( $origin = 'custom' ) {
+	public static function _get_merged_data( $origin = 'custom' ) {
 		if ( is_array( $origin ) ) {
 			_deprecated_argument( __FUNCTION__, '5.9.0' );
 		}
@@ -675,10 +675,8 @@ class WP_Theme_JSON_Resolver {
 		return $result;
 	}
 
-	public static function get_merged_data($origin = 'custom') {
-		return WP_Theme_JSON_Cache_Manager::get_cached_data($origin, function() use ($origin) {
-			return self::get_merged_data_inner($origin);
-		});
+	public static function get_merged_data( $origin = 'custom' ) {
+		return WP_Theme_JSON_Cache_Manager::get_cached_data( $origin, array( __CLASS__, '_get_merged_data' ) );
 	}
 
 	/**
@@ -1055,7 +1053,7 @@ class WP_Theme_JSON_Cache_Manager {
 
 	public static function get_cached_data( $origin, $data_generator ) {
 		if ( self::needs_update( $origin ) ) {
-			self::$cache[$origin] = $data_generator();
+			self::$cache[ $origin ] = call_user_func( $data_generator, $origin );
 			self::update_validation_state();
 		}
 		return self::$cache[$origin];
