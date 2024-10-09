@@ -1046,8 +1046,6 @@ class WP_Theme_JSON_Cache_Manager {
 
 	public static function clear_cache() {
 		self::$cache = array_fill_keys( array_keys( self::$cache ), null );
-		self::$last_style_update_count = 0;
-		self::$last_block_count = 0;
 	}
 
 	public static function handle_theme_support_change( $feature, $args = null ) {
