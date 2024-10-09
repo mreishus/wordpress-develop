@@ -2937,6 +2937,7 @@ function add_theme_support( $feature, ...$args ) {
 	}
 
 	$_wp_theme_features[ $feature ] = $args;
+
 	/**
 	 * Fires after a theme support has been added.
 	 *
@@ -3150,10 +3151,8 @@ function _remove_theme_support( $feature ) {
 	 * @since X.X.X
 	 *
 	 * @param string $feature The feature that was removed.
-	 * @param mixed  $args    An array of arguments or a boolean value associated with the removed feature.
 	 */
 	do_action( 'after_remove_theme_support', $feature );
-
 
 	return true;
 }
