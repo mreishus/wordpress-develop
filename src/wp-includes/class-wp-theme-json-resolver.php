@@ -1043,19 +1043,17 @@ class WP_Theme_JSON_Cache_Manager {
 	);
 	private static $last_style_update_count = 0;
 	private static $last_block_count = 0;
-	private static $last_hook_signatures = array();
 	private static $last_theme_features_signature = '';
 
 	// Temporary storage for new signatures to prevent redundant calculations
-	private static $new_hook_signatures = array();
 	private static $new_theme_features_signature = '';
 
 	public static function clear_cache() {
 		self::$cache = array_fill_keys( array_keys( self::$cache ), null );
 		self::$last_style_update_count = 0;
 		self::$last_block_count = 0;
-		self::$last_hook_signatures = array();
 		self::$last_theme_features_signature = '';
+		self::$new_theme_features_signature = '';
 	}
 
 	public static function get_cached_data( $origin, $data_generator ) {
@@ -1084,30 +1082,6 @@ class WP_Theme_JSON_Cache_Manager {
 			return true;
 		}
 
-		// Check hooks for changes
-		$hooks_to_check = array(
-			// Changes to this hook      => Will invalidate these origins
-			'wp_theme_json_data_default' => array( 'default', 'blocks', 'theme', 'custom' ),
-			'wp_theme_json_data_blocks'  => array( 'blocks', 'theme', 'custom' ),
-			'wp_theme_json_data_theme'   => array( 'theme', 'custom' ),
-			'wp_theme_json_data_user'    => array( 'custom' ),
-		);
-
-		global $wp_filter;
-		foreach ( $hooks_to_check as $hook_name => $invalidate_origins ) {
-			$current_signature = self::generate_hook_signature( $wp_filter[$hook_name] ?? null );
-			if ( ! isset( self::$last_hook_signatures[$hook_name] ) || self::$last_hook_signatures[$hook_name] !== $current_signature ) {
-				foreach ( $invalidate_origins as $invalidate_origin ) {
-					self::$cache[$invalidate_origin] = null;
-				}
-				// Store the new signature in temporary storage
-				self::$new_hook_signatures[$hook_name] = $current_signature;
-				if ( in_array( $origin, $invalidate_origins, true ) ) {
-					return true;
-				}
-			}
-		}
-
 		// Check for changes in theme features
 		global $_wp_theme_features;
 		$current_theme_features_signature = md5( serialize( $_wp_theme_features ) );
@@ -1124,23 +1098,6 @@ class WP_Theme_JSON_Cache_Manager {
 		return false;
 	}
 
-	private static function generate_hook_signature($hook) {
-		if ( empty( $hook ) ) {
-			return '';
-		}
-		$signature = '';
-
-		foreach ( $hook->callbacks as $priority => $callbacks ) {
-			$signature .= $priority . ':';
-			foreach ( $callbacks as $idx => $callback_data ) {
-				$signature .= $idx . ',';
-			}
-			$signature .= '|';
-		}
-
-		return md5( $signature );
-	}
-
 	private static function update_validation_state() {
 		// Update style and block counts
 		$style_registry = WP_Block_Styles_Registry::get_instance();
@@ -1148,34 +1105,16 @@ class WP_Theme_JSON_Cache_Manager {
 		$block_registry = WP_Block_Type_Registry::get_instance();
 		self::$last_block_count = count( $block_registry->get_all_registered() );
 
-		// Update hook signatures using temporary storage
-		$hooks_to_check = array(
-			'wp_theme_json_data_default' => array( 'default', 'blocks', 'theme', 'custom' ),
-			'wp_theme_json_data_blocks'  => array( 'blocks', 'theme', 'custom' ),
-			'wp_theme_json_data_theme'   => array( 'theme', 'custom' ),
-			'wp_theme_json_data_user'    => array( 'custom' ),
-		);
-
-		// Update signatures that were stored during needs_update
-		foreach ( $hooks_to_check as $hook_name => $invalidate_origins ) {
-			if ( isset( self::$new_hook_signatures[$hook_name] ) ) {
-				self::$last_hook_signatures[$hook_name] = self::$new_hook_signatures[$hook_name];
-			} else {
-				// If the signature wasn't checked, ensure it's up-to-date
-				global $wp_filter;
-				self::$last_hook_signatures[$hook_name] = self::generate_hook_signature( $wp_filter[$hook_name] ?? null );
-			}
-		}
-		// Clear the temporary storage
-		self::$new_hook_signatures = array();
-
 		// Update theme features signature
 		if ( ! empty( self::$new_theme_features_signature ) ) {
+			// Use previously calculated signature.
 			self::$last_theme_features_signature = self::$new_theme_features_signature;
 			self::$new_theme_features_signature = '';
 		} else {
+			// Calculate signature if not already done.
 			global $_wp_theme_features;
 			self::$last_theme_features_signature = md5( serialize( $_wp_theme_features ) );
+			self::$new_theme_features_signature = '';
 		}
 	}
 }
