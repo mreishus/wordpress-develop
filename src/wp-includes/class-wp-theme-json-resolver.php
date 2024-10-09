@@ -1072,9 +1072,9 @@ class WP_Theme_JSON_Cache_Manager {
 		$style_registry = WP_Block_Styles_Registry::get_instance();
 		$current_style_update_count = $style_registry->get_style_update_count();
 		$block_registry = WP_Block_Type_Registry::get_instance();
-		$current_block_count = count( $block_registry->get_all_registered() );
+		$current_block_count = $block_registry->get_block_update_count();
 
-		if ( self::$last_style_update_count < $current_style_update_count || self::$last_block_count !== $current_block_count ) {
+		if ( self::$last_style_update_count < $current_style_update_count || self::$last_block_count < $current_block_count ) {
 			self::clear_cache();
 			self::$last_style_update_count = $current_style_update_count;
 			self::$last_block_count = $current_block_count;
@@ -1085,11 +1085,10 @@ class WP_Theme_JSON_Cache_Manager {
 	}
 
 	private static function update_validation_state() {
-		// Update style and block counts
 		$style_registry = WP_Block_Styles_Registry::get_instance();
 		self::$last_style_update_count = $style_registry->get_style_update_count();
 		$block_registry = WP_Block_Type_Registry::get_instance();
-		self::$last_block_count = count( $block_registry->get_all_registered() );
+		self::$last_block_count = $block_registry->get_block_update_count();
 	}
 }
 
