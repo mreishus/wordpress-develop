@@ -79,7 +79,7 @@ class WP_Theme_JSON_Cache_Manager {
 			self::$cache[ $origin ] = call_user_func( $data_generator, $origin );
 			self::update_validation_state();
 		}
-		return self::$cache[$origin];
+		return self::$cache[ $origin ];
 	}
 
 	/**
@@ -91,7 +91,7 @@ class WP_Theme_JSON_Cache_Manager {
 	 * @return bool True if the cache needs to be updated, false otherwise.
 	 */
 	private static function needs_update( $origin ) {
-		if ( null === self::$cache[$origin] ) {
+		if ( null === self::$cache[ $origin ] ) {
 			return true;
 		}
 
