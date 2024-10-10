@@ -99,9 +99,9 @@ class WP_Theme_JSON_Cache_Manager {
 		}
 
 		// Check for changes in style and block counts
-		$style_registry = WP_Block_Styles_Registry::get_instance();
+		$style_registry             = WP_Block_Styles_Registry::get_instance();
 		$current_style_update_count = $style_registry->get_style_update_count();
-		$block_registry = WP_Block_Type_Registry::get_instance();
+		$block_registry             = WP_Block_Type_Registry::get_instance();
 		$current_block_update_count = $block_registry->get_block_update_count();
 
 		if ( self::$last_style_update_count < $current_style_update_count || self::$last_block_update_count < $current_block_update_count ) {
@@ -122,9 +122,9 @@ class WP_Theme_JSON_Cache_Manager {
 	 * @return void
 	 */
 	private static function update_validation_state() {
-		$style_registry = WP_Block_Styles_Registry::get_instance();
+		$style_registry                = WP_Block_Styles_Registry::get_instance();
 		self::$last_style_update_count = $style_registry->get_style_update_count();
-		$block_registry = WP_Block_Type_Registry::get_instance();
+		$block_registry                = WP_Block_Type_Registry::get_instance();
 		self::$last_block_update_count = $block_registry->get_block_update_count();
 	}
 }
