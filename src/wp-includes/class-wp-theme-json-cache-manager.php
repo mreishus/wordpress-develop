@@ -47,7 +47,10 @@ class WP_Theme_JSON_Cache_Manager {
 	 * @return void
 	 */
 	public static function clear_cache() {
-		self::$cache = array_fill_keys( array_keys( self::$cache ), null );
+		self::$cache['default'] = null;
+		self::$cache['blocks'] = null;
+		self::$cache['theme'] = null;
+		self::$cache['custom'] = null;
 	}
 
 	/**
