@@ -37,7 +37,7 @@ class WP_Theme_JSON_Cache_Manager {
 	 * @since X.X.X
 	 * @var int
 	 */
-	private static $last_block_count = 0;
+	private static $last_block_update_count = 0;
 
 	/**
 	 * Clears the cached merged data for all origins.
@@ -102,12 +102,12 @@ class WP_Theme_JSON_Cache_Manager {
 		$style_registry = WP_Block_Styles_Registry::get_instance();
 		$current_style_update_count = $style_registry->get_style_update_count();
 		$block_registry = WP_Block_Type_Registry::get_instance();
-		$current_block_count = $block_registry->get_block_update_count();
+		$current_block_update_count = $block_registry->get_block_update_count();
 
-		if ( self::$last_style_update_count < $current_style_update_count || self::$last_block_count < $current_block_count ) {
+		if ( self::$last_style_update_count < $current_style_update_count || self::$last_block_update_count < $current_block_update_count ) {
 			self::clear_cache();
 			self::$last_style_update_count = $current_style_update_count;
-			self::$last_block_count = $current_block_count;
+			self::$last_block_update_count = $current_block_update_count;
 			return true;
 		}
 
@@ -125,6 +125,6 @@ class WP_Theme_JSON_Cache_Manager {
 		$style_registry = WP_Block_Styles_Registry::get_instance();
 		self::$last_style_update_count = $style_registry->get_style_update_count();
 		$block_registry = WP_Block_Type_Registry::get_instance();
-		self::$last_block_count = $block_registry->get_block_update_count();
+		self::$last_block_update_count = $block_registry->get_block_update_count();
 	}
 }
