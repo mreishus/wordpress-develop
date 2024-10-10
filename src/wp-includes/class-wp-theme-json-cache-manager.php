@@ -48,9 +48,9 @@ class WP_Theme_JSON_Cache_Manager {
 	 */
 	public static function clear_cache() {
 		self::$cache['default'] = null;
-		self::$cache['blocks'] = null;
-		self::$cache['theme'] = null;
-		self::$cache['custom'] = null;
+		self::$cache['blocks']  = null;
+		self::$cache['theme']   = null;
+		self::$cache['custom']  = null;
 	}
 
 	/**
@@ -64,7 +64,7 @@ class WP_Theme_JSON_Cache_Manager {
 	 * @return void
 	 */
 	public static function handle_theme_support_change( $feature, $args = null ) {
-		self::$cache['theme'] = null;
+		self::$cache['theme']  = null;
 		self::$cache['custom'] = null;
 	}
 
