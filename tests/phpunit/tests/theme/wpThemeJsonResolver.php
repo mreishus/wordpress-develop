@@ -1490,7 +1490,11 @@ class Tests_Theme_wpThemeJsonResolver extends WP_UnitTestCase {
 		add_filter( 'wp_theme_json_data_default', array( $this, 'add_custom_duotone_default' ) );
 		$filtered_merged_data = WP_Theme_JSON_Resolver::get_merged_data();
 		$this->assertEquals(
-			array( 'name' => 'Cool Duotone', 'colors' => array( '#000000', '#7f7f7f' ), 'slug' => 'cool-duotone' ),
+			array(
+				'name'   => 'Cool Duotone',
+				'colors' => array( '#000000', '#7f7f7f' ),
+				'slug'   => 'cool-duotone',
+			),
 			$filtered_merged_data->get_settings()['color']['duotone']['special1'],
 			'Default duotone should be added'
 		);
@@ -1500,7 +1504,11 @@ class Tests_Theme_wpThemeJsonResolver extends WP_UnitTestCase {
 		add_filter( 'wp_theme_json_data_blocks', array( $this, 'add_custom_duotone_blocks' ) );
 		$filtered_merged_data = WP_Theme_JSON_Resolver::get_merged_data();
 		$this->assertEquals(
-			array( 'name' => 'Cooler Duotone', 'colors' => array( '#000000', '#7f7f7f' ), 'slug' => 'cooler-duotone' ),
+			array(
+				'name'   => 'Cooler Duotone',
+				'colors' => array( '#000000', '#7f7f7f' ),
+				'slug'   => 'cooler-duotone',
+			),
 			$filtered_merged_data->get_settings()['color']['duotone']['special2'],
 			'Blocks duotone should be added'
 		);
@@ -1510,7 +1518,11 @@ class Tests_Theme_wpThemeJsonResolver extends WP_UnitTestCase {
 		add_filter( 'wp_theme_json_data_theme', array( $this, 'add_custom_duotone_theme' ) );
 		$filtered_merged_data = WP_Theme_JSON_Resolver::get_merged_data();
 		$this->assertEquals(
-			array( 'name' => 'Coolest Duotone', 'colors' => array( '#000000', '#7f7f7f' ), 'slug' => 'coolest-duotone' ),
+			array(
+				'name'   => 'Coolest Duotone',
+				'colors' => array( '#000000', '#7f7f7f' ),
+				'slug'   => 'coolest-duotone',
+			),
 			$filtered_merged_data->get_settings()['color']['duotone']['special3'],
 			'Theme duotone should be added'
 		);
@@ -1520,7 +1532,11 @@ class Tests_Theme_wpThemeJsonResolver extends WP_UnitTestCase {
 		add_filter( 'wp_theme_json_data_user', array( $this, 'add_custom_duotone_user' ) );
 		$filtered_merged_data = WP_Theme_JSON_Resolver::get_merged_data();
 		$this->assertEquals(
-			array( 'name' => 'Ultimate Duotone', 'colors' => array( '#ffffff', '#000000' ), 'slug' => 'ultimate-duotone' ),
+			array(
+				'name'   => 'Ultimate Duotone',
+				'colors' => array( '#ffffff', '#000000' ),
+				'slug'   => 'ultimate-duotone',
+			),
 			$filtered_merged_data->get_settings()['color']['duotone']['special4'],
 			'User duotone should be added'
 		);
