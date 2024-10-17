@@ -1545,25 +1545,41 @@ class Tests_Theme_wpThemeJsonResolver extends WP_UnitTestCase {
 
 	public function add_custom_duotone_default( $theme_json ) {
 		$data = $theme_json->get_data();
-		$data['settings']['color']['duotone']['special1'] = array( 'name' => 'Cool Duotone', 'colors' => array( '#000000', '#7f7f7f' ), 'slug' => 'cool-duotone' );
+		$data['settings']['color']['duotone']['special1'] = array(
+			'name'   => 'Cool Duotone',
+			'colors' => array( '#000000', '#7f7f7f' ),
+			'slug'   => 'cool-duotone',
+		);
 		return new WP_Theme_JSON_Data( $data );
 	}
 
 	public function add_custom_duotone_blocks( $theme_json ) {
 		$data = $theme_json->get_data();
-		$data['settings']['color']['duotone']['special2'] = array( 'name' => 'Cooler Duotone', 'colors' => array( '#000000', '#7f7f7f' ), 'slug' => 'cooler-duotone' );
+		$data['settings']['color']['duotone']['special2'] = array(
+			'name'   => 'Cooler Duotone',
+			'colors' => array( '#000000', '#7f7f7f' ),
+			'slug'   => 'cooler-duotone',
+		);
 		return new WP_Theme_JSON_Data( $data );
 	}
 
 	public function add_custom_duotone_theme( $theme_json ) {
 		$data = $theme_json->get_data();
-		$data['settings']['color']['duotone']['special3'] = array( 'name' => 'Coolest Duotone', 'colors' => array( '#000000', '#7f7f7f' ), 'slug' => 'coolest-duotone' );
+		$data['settings']['color']['duotone']['special3'] = array(
+			'name'   => 'Coolest Duotone',
+			'colors' => array( '#000000', '#7f7f7f' ),
+			'slug'   => 'coolest-duotone',
+		);
 		return new WP_Theme_JSON_Data( $data );
 	}
 
 	public function add_custom_duotone_user( $theme_json ) {
 		$data = $theme_json->get_data();
-		$data['settings']['color']['duotone']['special4'] = array( 'name' => 'Ultimate Duotone', 'colors' => array( '#ffffff', '#000000' ), 'slug' => 'ultimate-duotone' );
+		$data['settings']['color']['duotone']['special4'] = array(
+			'name'   => 'Ultimate Duotone',
+			'colors' => array( '#ffffff', '#000000' ),
+			'slug'   => 'ultimate-duotone',
+		);
 		return new WP_Theme_JSON_Data( $data );
 	}
 }
