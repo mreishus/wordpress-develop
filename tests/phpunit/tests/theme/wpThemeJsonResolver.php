@@ -1474,4 +1474,112 @@ class Tests_Theme_wpThemeJsonResolver extends WP_UnitTestCase {
 
 		$this->assertSameSetsWithIndex( $expected, $actual, 'Merged variation styles do not match.' );
 	}
+
+	public function test_merged_data_with_individual_filters() {
+		// Clean any existing cache
+		wp_clean_theme_json_cache();
+
+		// Initial case: Check that no custom duotones are present before filters
+		$initial_merged_data = WP_Theme_JSON_Resolver::get_merged_data();
+		$this->assertArrayNotHasKey( 'special1', $initial_merged_data->get_settings()['color']['duotone'] ?? array(), 'Default duotone should not be present initially' );
+		$this->assertArrayNotHasKey( 'special2', $initial_merged_data->get_settings()['color']['duotone'] ?? array(), 'Blocks duotone should not be present initially' );
+		$this->assertArrayNotHasKey( 'special3', $initial_merged_data->get_settings()['color']['duotone'] ?? array(), 'Theme duotone should not be present initially' );
+		$this->assertArrayNotHasKey( 'special4', $initial_merged_data->get_settings()['color']['duotone'] ?? array(), 'User duotone should not be present initially' );
+
+		// wp_theme_json_data_default
+		add_filter( 'wp_theme_json_data_default', array( $this, 'add_custom_duotone_default' ) );
+		$filtered_merged_data = WP_Theme_JSON_Resolver::get_merged_data();
+		$this->assertEquals(
+			array(
+				'name'   => 'Cool Duotone',
+				'colors' => array( '#000000', '#7f7f7f' ),
+				'slug'   => 'cool-duotone',
+			),
+			$filtered_merged_data->get_settings()['color']['duotone']['special1'],
+			'Default duotone should be added'
+		);
+		remove_filter( 'wp_theme_json_data_default', array( $this, 'add_custom_duotone_default' ) );
+
+		// wp_theme_json_data_blocks
+		add_filter( 'wp_theme_json_data_blocks', array( $this, 'add_custom_duotone_blocks' ) );
+		$filtered_merged_data = WP_Theme_JSON_Resolver::get_merged_data();
+		$this->assertEquals(
+			array(
+				'name'   => 'Cooler Duotone',
+				'colors' => array( '#000000', '#7f7f7f' ),
+				'slug'   => 'cooler-duotone',
+			),
+			$filtered_merged_data->get_settings()['color']['duotone']['special2'],
+			'Blocks duotone should be added'
+		);
+		remove_filter( 'wp_theme_json_data_blocks', array( $this, 'add_custom_duotone_blocks' ) );
+
+		// wp_theme_json_data_theme filter
+		add_filter( 'wp_theme_json_data_theme', array( $this, 'add_custom_duotone_theme' ) );
+		$filtered_merged_data = WP_Theme_JSON_Resolver::get_merged_data();
+		$this->assertEquals(
+			array(
+				'name'   => 'Coolest Duotone',
+				'colors' => array( '#000000', '#7f7f7f' ),
+				'slug'   => 'coolest-duotone',
+			),
+			$filtered_merged_data->get_settings()['color']['duotone']['special3'],
+			'Theme duotone should be added'
+		);
+		remove_filter( 'wp_theme_json_data_theme', array( $this, 'add_custom_duotone_theme' ) );
+
+		// wp_theme_json_data_user filter
+		add_filter( 'wp_theme_json_data_user', array( $this, 'add_custom_duotone_user' ) );
+		$filtered_merged_data = WP_Theme_JSON_Resolver::get_merged_data();
+		$this->assertEquals(
+			array(
+				'name'   => 'Ultimate Duotone',
+				'colors' => array( '#ffffff', '#000000' ),
+				'slug'   => 'ultimate-duotone',
+			),
+			$filtered_merged_data->get_settings()['color']['duotone']['special4'],
+			'User duotone should be added'
+		);
+		remove_filter( 'wp_theme_json_data_user', array( $this, 'add_custom_duotone_user' ) );
+	}
+
+	public function add_custom_duotone_default( $theme_json ) {
+		$data = $theme_json->get_data();
+		$data['settings']['color']['duotone']['special1'] = array(
+			'name'   => 'Cool Duotone',
+			'colors' => array( '#000000', '#7f7f7f' ),
+			'slug'   => 'cool-duotone',
+		);
+		return new WP_Theme_JSON_Data( $data );
+	}
+
+	public function add_custom_duotone_blocks( $theme_json ) {
+		$data = $theme_json->get_data();
+		$data['settings']['color']['duotone']['special2'] = array(
+			'name'   => 'Cooler Duotone',
+			'colors' => array( '#000000', '#7f7f7f' ),
+			'slug'   => 'cooler-duotone',
+		);
+		return new WP_Theme_JSON_Data( $data );
+	}
+
+	public function add_custom_duotone_theme( $theme_json ) {
+		$data = $theme_json->get_data();
+		$data['settings']['color']['duotone']['special3'] = array(
+			'name'   => 'Coolest Duotone',
+			'colors' => array( '#000000', '#7f7f7f' ),
+			'slug'   => 'coolest-duotone',
+		);
+		return new WP_Theme_JSON_Data( $data );
+	}
+
+	public function add_custom_duotone_user( $theme_json ) {
+		$data = $theme_json->get_data();
+		$data['settings']['color']['duotone']['special4'] = array(
+			'name'   => 'Ultimate Duotone',
+			'colors' => array( '#ffffff', '#000000' ),
+			'slug'   => 'ultimate-duotone',
+		);
+		return new WP_Theme_JSON_Data( $data );
+	}
 }
