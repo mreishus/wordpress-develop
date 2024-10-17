@@ -650,6 +650,20 @@ class WP_Theme_JSON_Resolver {
 	 * @return WP_Theme_JSON
 	 */
 	public static function get_merged_data( $origin = 'custom' ) {
+		return WP_Theme_JSON_Cache_Manager::get_cached_merged_data( $origin, array( __CLASS__, '_get_merged_data' ) );
+	}
+
+	/**
+	 * Generates the merged WP_Theme_JSON data.
+	 *
+	 * This method is intended for internal use and should not be called directly.
+	 *
+	 * @since X.X.X
+	 *
+	 * @param string $origin The origin for which to get the merged data.
+	 * @return WP_Theme_JSON The merged theme data.
+	 */
+	public static function _get_merged_data( $origin = 'custom' ) {
 		if ( is_array( $origin ) ) {
 			_deprecated_argument( __FUNCTION__, '5.9.0' );
 		}
@@ -674,6 +688,7 @@ class WP_Theme_JSON_Resolver {
 
 		return $result;
 	}
+
 
 	/**
 	 * Returns the ID of the custom post type
