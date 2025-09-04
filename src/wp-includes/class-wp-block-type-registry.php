@@ -31,6 +31,18 @@ final class WP_Block_Type_Registry {
 	private static $instance = null;
 
 	/**
+	 * Counter for tracking updates to the registered block types.
+	 *
+	 * This variable increments each time a block is registered or unregistered,
+	 * allowing for tracking changes and potential cache invalidation or UI updates.
+	 *
+	 * @since X.X.X
+	 *
+	 * @var int $block_update_count Number of updates made to the block registry.
+	 */
+	private $block_update_count = 0;
+
+	/**
 	 * Registers a block type.
 	 *
 	 * @since 5.0.0
@@ -95,7 +107,7 @@ final class WP_Block_Type_Registry {
 		}
 
 		$this->registered_block_types[ $name ] = $block_type;
-
+		$this->block_update_count++;
 		return $block_type;
 	}
 
@@ -125,7 +137,7 @@ final class WP_Block_Type_Registry {
 
 		$unregistered_block_type = $this->registered_block_types[ $name ];
 		unset( $this->registered_block_types[ $name ] );
-
+		$this->block_update_count++;
 		return $unregistered_block_type;
 	}
 
@@ -197,5 +209,19 @@ final class WP_Block_Type_Registry {
 		}
 
 		return self::$instance;
+	}
+
+	/**
+	 * Retrieves the current block update count.
+	 *
+	 * This method returns the number of times the block registry has been updated,
+	 * either through registration or unregistration of block types.
+	 *
+	 * @since X.X.X
+	 *
+	 * @return int The current value of the block update count.
+	 */
+	public function get_block_update_count() {
+		return $this->block_update_count;
 	}
 }
